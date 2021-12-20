@@ -1,36 +1,36 @@
-import uuid
-
 import pytest
 from misc import exceptions
 from service import account_service as sa
 from service import resource_service as sr
 
+from .utils import get_uuid
+
 
 def test_create_resource():
-    uid = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    resource_name_2 = str(uuid.uuid4())
-    account = sa.create_account(uid)
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    resource_name_2 = get_uuid()
+    account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
     account = sr.create_resource(account, resource_name_2)
     assert account.resources == {resource_name_1: {}, resource_name_2: {}}
 
 
 def test_create_duplicate_resource():
-    uid = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    account = sa.create_account(uid)
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
     with pytest.raises(exceptions.ResourceExistsException):
         sr.create_resource(account, resource_name_1)
 
 
 def test_acquire_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    resource_name_2 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
-    user_2 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    resource_name_2 = get_uuid()
+    user_1 = get_uuid()
+    user_2 = get_uuid()
     account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
 
@@ -45,10 +45,10 @@ def test_acquire_resource():
 
 
 def test_acquire_locked_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
-    user_2 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    user_1 = get_uuid()
+    user_2 = get_uuid()
     account = sa.create_account(account_id)
 
     account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
@@ -73,10 +73,10 @@ def test_acquire_locked_resource():
 
 
 def test_release_locked_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
-    user_2 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    user_1 = get_uuid()
+    user_2 = get_uuid()
     account = sa.create_account(account_id)
 
     account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
@@ -91,10 +91,10 @@ def test_release_locked_resource():
 
 
 def test_release_unlocked_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
-    user_2 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    user_1 = get_uuid()
+    user_2 = get_uuid()
     account = sa.create_account(account_id)
 
     account, message_1 = sr.acquire_resource(account, resource_name_1, user_1, duration=-100)
@@ -105,9 +105,9 @@ def test_release_unlocked_resource():
 
 
 def test_release_non_existant_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    user_1 = get_uuid()
     account = sa.create_account(account_id)
 
     with pytest.raises(exceptions.ResourceDoesNotExistException):
@@ -115,11 +115,11 @@ def test_release_non_existant_resource():
 
 
 def test_list_resources():
-    account_id = str(uuid.uuid4())
+    account_id = get_uuid()
     resource_name_1 = "ABC"
     resource_name_2 = "DEF"
     resource_name_3 = "GHI"
-    user_1 = str(uuid.uuid4())
+    user_1 = get_uuid()
     account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
 
@@ -141,10 +141,10 @@ def test_list_resources():
 
 
 def test_delete_resource():
-    account_id = str(uuid.uuid4())
-    resource_name_1 = str(uuid.uuid4())
-    resource_name_2 = str(uuid.uuid4())
-    user_1 = str(uuid.uuid4())
+    account_id = get_uuid()
+    resource_name_1 = get_uuid()
+    resource_name_2 = get_uuid()
+    user_1 = get_uuid()
     account = sa.create_account(account_id)
     account = sr.create_resource(account, resource_name_1)
     account = sr.create_resource(account, resource_name_2)
