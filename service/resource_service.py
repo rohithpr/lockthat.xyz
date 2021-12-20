@@ -71,3 +71,13 @@ def release_resource(account, resource_name, user):
     account.resources[resource_name] = {}
     account.save()
     return account
+
+
+def list_resources(account):
+    resources = list(sorted(account.resources.keys()))
+    if len(resources) <= 1:
+        formatted = resources[0]
+    else:
+        formatted = ", ".join(resources[:-1])
+        formatted = f"{formatted} and {resources[-1]}"
+    return f"The following {'resources have' if len(resources) != 1 else 'resource has'} been registered: {formatted}."

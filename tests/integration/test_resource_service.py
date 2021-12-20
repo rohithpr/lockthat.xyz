@@ -112,3 +112,29 @@ def test_release_non_existant_resource():
 
     with pytest.raises(exceptions.ResourceDoesNotExistException):
         sr.release_resource(account, resource_name_1, user_1)
+
+
+def test_list_resources():
+    account_id = str(uuid.uuid4())
+    resource_name_1 = "ABC"
+    resource_name_2 = "DEF"
+    resource_name_3 = "GHI"
+    user_1 = str(uuid.uuid4())
+    account = sa.create_account(account_id)
+    sr.create_resource(account, resource_name_1)
+
+    list_of_resources = sr.list_resources(account)
+    assert list_of_resources == f"The following resource has been registered: {resource_name_1}."
+
+    sr.acquire_resource(account, resource_name_2, user_1)
+    list_of_resources = sr.list_resources(account)
+    assert (
+        list_of_resources == f"The following resources have been registered: {resource_name_1} and {resource_name_2}."
+    )
+
+    sr.acquire_resource(account, resource_name_3, user_1)
+    list_of_resources = sr.list_resources(account)
+    assert (
+        list_of_resources
+        == f"The following resources have been registered: {resource_name_1}, {resource_name_2} and {resource_name_3}."
+    )
