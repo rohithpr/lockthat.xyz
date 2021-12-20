@@ -1,9 +1,9 @@
 version: '3.8'
 services:
-  hold-dynamodb-local:
+  takethat-dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
-    container_name: hold-dynamodb-local
+    container_name: takethat-dynamodb-local
     ports:
       - "8000:8000"
     volumes:

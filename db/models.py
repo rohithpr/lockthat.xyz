@@ -1,8 +1,8 @@
-from misc.constants import HOBBY_TIER, LOCAL_STAGE, PROD_STAGE
+from misc.constants import HOBBY_TIER, LOCAL_STAGE, PROD_STAGE, STAGE
 from pynamodb.attributes import JSONAttribute, UnicodeAttribute
 from pynamodb.models import Model
 
-from .config import ACCOUNTS_TABLE, STAGE, USERS_TABLE
+from .config import ACCOUNTS_TABLE, USERS_TABLE
 
 
 class Account(Model):
