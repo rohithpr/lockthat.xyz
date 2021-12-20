@@ -1,4 +1,4 @@
-from misc.constants import LOCAL_STAGE, PROD_STAGE
+from misc.constants import HOBBY_TIER, LOCAL_STAGE, PROD_STAGE
 from pynamodb.attributes import JSONAttribute, UnicodeAttribute
 from pynamodb.models import Model
 
@@ -15,6 +15,7 @@ class Account(Model):
 
     uid = UnicodeAttribute(hash_key=True)
     resources = JSONAttribute(default=dict)
+    plan = UnicodeAttribute(default=HOBBY_TIER)
 
 
 class User(Model):

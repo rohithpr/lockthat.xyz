@@ -1,5 +1,5 @@
 import pytest
-from misc import exceptions
+from misc import constants, exceptions
 from service import account_service as sa
 from service import resource_service as sr
 
@@ -23,6 +23,15 @@ def test_create_duplicate_resource():
     sr.create_resource(account, resource_name_1)
     with pytest.raises(exceptions.ResourceExistsException):
         sr.create_resource(account, resource_name_1)
+
+
+def test_resource_creation_limit():
+    account_id = get_uuid()
+    account = sa.create_account(account_id)
+    for i in range(constants.HOBBY_TIER_RESOURCE_LIMIT):
+        sr.create_resource(account, get_uuid())
+    with pytest.raises(exceptions.ResourceLimitExceededException):
+        sr.create_resource(account, get_uuid())
 
 
 def test_acquire_resource():

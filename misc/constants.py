@@ -2,3 +2,7 @@ PROJECT = "hold"
 
 LOCAL_STAGE = "local"
 PROD_STAGE = "prod"
+
+HOBBY_TIER = "hobby"
+
+HOBBY_TIER_RESOURCE_LIMIT = 50

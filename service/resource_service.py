@@ -1,12 +1,18 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from misc import exceptions
+from misc import constants, exceptions
 
 
 def create_resource(account, resource_name):
     if resource_name in account.resources:
         raise exceptions.ResourceExistsException()
+
+    if account.plan == constants.HOBBY_TIER and len(account.resources) >= constants.HOBBY_TIER_RESOURCE_LIMIT:
+        raise exceptions.ResourceLimitExceededException(
+            f"The hobby tier only supports {constants.HOBBY_TIER_RESOURCE_LIMIT} resources. "
+            "Please delete some existing resources or upgrade to the paid plan."
+        )
 
     account.resources[resource_name] = {}
     account.save()
