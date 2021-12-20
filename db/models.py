@@ -1,7 +1,8 @@
-from pynamodb.attributes import BooleanAttribute, JSONAttribute, ListAttribute, UnicodeAttribute
-from pynamodb.models import Model
-from .config import ACCOUNTS_TABLE, USERS_TABLE, STAGE
 from misc.constants import LOCAL_STAGE, PROD_STAGE
+from pynamodb.attributes import JSONAttribute, UnicodeAttribute
+from pynamodb.models import Model
+
+from .config import ACCOUNTS_TABLE, STAGE, USERS_TABLE
 
 
 class Account(Model):
@@ -11,9 +12,9 @@ class Account(Model):
             host = "http://localhost:8000"
         elif STAGE == PROD_STAGE:
             region = "us-east-1"
-    
+
     uid = UnicodeAttribute(hash_key=True)
-    resources = JSONAttribute(default={})
+    resources = JSONAttribute(default=dict)
 
 
 class User(Model):
