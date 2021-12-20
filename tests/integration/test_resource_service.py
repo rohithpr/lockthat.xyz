@@ -138,3 +138,21 @@ def test_list_resources():
         list_of_resources
         == f"The following resources have been registered: {resource_name_1}, {resource_name_2} and {resource_name_3}."
     )
+
+
+def test_delete_resource():
+    account_id = str(uuid.uuid4())
+    resource_name_1 = str(uuid.uuid4())
+    resource_name_2 = str(uuid.uuid4())
+    user_1 = str(uuid.uuid4())
+    account = sa.create_account(account_id)
+    account = sr.create_resource(account, resource_name_1)
+    account = sr.create_resource(account, resource_name_2)
+
+    assert resource_name_1 in account.resources
+    assert resource_name_2 in account.resources
+
+    account = sr.delete_resource(account, resource_name_1, user_1)
+
+    assert resource_name_1 not in account.resources
+    assert resource_name_2 in account.resources
