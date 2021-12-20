@@ -70,3 +70,45 @@ def test_acquire_locked_resource():
         sr.acquire_resource(account, resource_name_1, user_1)
     account, message_5 = sr.acquire_resource(account, resource_name_1, user_1, override=True)
     assert f"The resource was acquired by overriding the previous lock held by {user_2}." in message_5
+
+
+def test_release_locked_resource():
+    account_id = str(uuid.uuid4())
+    resource_name_1 = str(uuid.uuid4())
+    user_1 = str(uuid.uuid4())
+    user_2 = str(uuid.uuid4())
+    account = sa.create_account(account_id)
+
+    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
+    assert account.resources[resource_name_1] != {}
+
+    with pytest.raises(exceptions.ResourceLocked) as ex:
+        sr.release_resource(account, resource_name_1, user_2)
+    assert ex.value.message.startswith("You cannot release a lock held by another user. ")
+
+    account = sr.release_resource(account, resource_name_1, user_1)
+    assert account.resources[resource_name_1] == {}
+
+
+def test_release_unlocked_resource():
+    account_id = str(uuid.uuid4())
+    resource_name_1 = str(uuid.uuid4())
+    user_1 = str(uuid.uuid4())
+    user_2 = str(uuid.uuid4())
+    account = sa.create_account(account_id)
+
+    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1, duration=-100)
+    assert account.resources[resource_name_1] != {}
+
+    account = sr.release_resource(account, resource_name_1, user_2)
+    assert account.resources[resource_name_1] == {}
+
+
+def test_release_non_existant_resource():
+    account_id = str(uuid.uuid4())
+    resource_name_1 = str(uuid.uuid4())
+    user_1 = str(uuid.uuid4())
+    account = sa.create_account(account_id)
+
+    with pytest.raises(exceptions.ResourceDoesNotExistException):
+        sr.release_resource(account, resource_name_1, user_1)

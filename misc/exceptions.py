@@ -9,6 +9,10 @@ class ResourceExistsException(HoldException):
     pass
 
 
+class ResourceDoesNotExistException(HoldException):
+    pass
+
+
 class ResourceLocked(HoldException):
     def __init__(self, message=""):
         super().__init__(message)

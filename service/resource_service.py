@@ -50,3 +50,24 @@ def acquire_resource(account, resource_name, user, duration=1440, message="", ov
         resource_name, resource["user"], expiry, resource["message"], overridden_from
     )
     return account, message
+
+
+def release_resource(account, resource_name, user):
+    if resource_name not in account.resources:
+        raise exceptions.ResourceDoesNotExistException(message=f"The resource {resource_name} does not exist.")
+
+    resource = account.resources[resource_name]
+    expiry = datetime.fromisoformat(resource.get("expiry", str(datetime.utcnow())))
+    if resource.get("locked", False) and resource.get("user", None) != user and expiry > datetime.utcnow():
+        message = create_resource_acquire_status_message(
+            resource_name,
+            resource["user"],
+            expiry,
+            resource["message"],
+        )
+        message = f"You cannot release a lock held by another user. {message}"
+        raise exceptions.ResourceLocked(message)
+
+    account.resources[resource_name] = {}
+    account.save()
+    return account
