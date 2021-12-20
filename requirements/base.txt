@@ -1,0 +1,9 @@
+# https://stackoverflow.com/q/67553537/3664835
+# Specify older version of Werkzeug and Flask to overcome lambda issues.
+Flask<2.0.0  # noqa
+Werkzeug==1.0.1  # noqa
+
+boto3==1.17.74
+Flask-Cors==3.0.10
+Flask-Login==0.5.0
+pynamodb==5.0.3

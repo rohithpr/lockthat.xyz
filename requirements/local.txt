@@ -1,0 +1,5 @@
+-r ./base.txt
+
+pre-commit==2.12.1
+pudb==2021.1
+pytest==6.2.3
