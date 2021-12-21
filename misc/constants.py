@@ -5,7 +5,7 @@ import os
 # Stages
 STAGE = os.environ.get("HOLD_STAGE", "local")
 
-PROJECT = "takethat"
+PROJECT = "lockthat"
 
 LOCAL_STAGE = "local"
 PROD_STAGE = "prod"
