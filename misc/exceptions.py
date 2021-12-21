@@ -1,3 +1,13 @@
+import traceback
+
+from sentry_sdk import capture_exception
+
+
+def report_exception(e):
+    traceback.print_exc()
+    capture_exception(e)
+
+
 class HoldException(Exception):
     """Base class for custom exceptions."""
 
