@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from misc import constants, exceptions
 
 
-def create_resource(account, resource_name):
+def create_resource(account, resource_name, **_):
     if resource_name in account.resources:
         raise exceptions.ResourceExistsException()
 
@@ -16,7 +16,7 @@ def create_resource(account, resource_name):
 
     account.resources[resource_name] = {}
     account.save()
-    return account
+    return f"The resource {resource_name} has been created."
 
 
 def create_resource_acquire_status_message(resource_name, user, expiry, lock_reason, overridden_from=None):
@@ -30,7 +30,7 @@ def create_resource_acquire_status_message(resource_name, user, expiry, lock_rea
 
 def acquire_resource(account, resource_name, user, duration=1440, message="", override=False):
     if resource_name not in account.resources:
-        account = create_resource(account, resource_name)
+        create_resource(account, resource_name)
 
     resource = account.resources[resource_name]
     expiry = datetime.fromisoformat(resource.get("expiry", str(datetime.utcnow())))
@@ -55,7 +55,7 @@ def acquire_resource(account, resource_name, user, duration=1440, message="", ov
     message = create_resource_acquire_status_message(
         resource_name, resource["user"], expiry, resource["message"], overridden_from
     )
-    return account, message
+    return message
 
 
 def release_resource(account, resource_name, user):
@@ -76,7 +76,7 @@ def release_resource(account, resource_name, user):
 
     account.resources[resource_name] = {}
     account.save()
-    return account
+    return f"The resource {resource_name} has been released."
 
 
 def list_resources(account):
@@ -86,11 +86,11 @@ def list_resources(account):
     else:
         formatted = ", ".join(resources[:-1])
         formatted = f"{formatted} and {resources[-1]}"
-    return f"The following {'resources have' if len(resources) != 1 else 'resource has'} been registered: {formatted}."
+    return f"{formatted}."
 
 
 def delete_resource(account, resource_name, user):
     release_resource(account, resource_name, user)
     del account.resources[resource_name]
     account.save()
-    return account
+    return f"Resource {resource_name} has been deleted."

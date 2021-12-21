@@ -12,7 +12,8 @@ def test_create_resource():
     resource_name_2 = get_uuid()
     account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
-    account = sr.create_resource(account, resource_name_2)
+    message = sr.create_resource(account, resource_name_2)
+    assert message == f"The resource {resource_name_2} has been created."
     assert account.resources == {resource_name_1: {}, resource_name_2: {}}
 
 
@@ -44,12 +45,12 @@ def test_acquire_resource():
     sr.create_resource(account, resource_name_1)
 
     # Acquire a created resource
-    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
+    message_1 = sr.acquire_resource(account, resource_name_1, user_1)
     # TODO: use freeze time fixture instead of checking for startswith
     assert message_1.startswith(f"Resource '{resource_name_1}' is locked by user '{user_1}' till")
 
     # Create an acquire a resource
-    account, message_2 = sr.acquire_resource(account, resource_name_2, user_2)
+    message_2 = sr.acquire_resource(account, resource_name_2, user_2)
     assert message_2.startswith(f"Resource '{resource_name_2}' is locked by user '{user_2}' till")
 
 
@@ -60,24 +61,24 @@ def test_acquire_locked_resource():
     user_2 = get_uuid()
     account = sa.create_account(account_id)
 
-    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
+    sr.acquire_resource(account, resource_name_1, user_1)
 
     # A different user should not be able to acquire the lock
     with pytest.raises(exceptions.ResourceLocked):
-        account, message_2 = sr.acquire_resource(account, resource_name_1, user_2)
+        sr.acquire_resource(account, resource_name_1, user_2)
 
     # The same user should be able to reacquire the lock
-    account, message_3 = sr.acquire_resource(account, resource_name_1, user_1, -100, "hello")
+    message_3 = sr.acquire_resource(account, resource_name_1, user_1, -100, "hello")
     assert message_3.endswith("Reason: hello.")
 
     # A user should be able to acquire a lock that has expired
-    account, message_4 = sr.acquire_resource(account, resource_name_1, user_2)
+    sr.acquire_resource(account, resource_name_1, user_2)
     assert account.resources[resource_name_1]["user"] == user_2
 
     # A user should be able to override an existing lock
     with pytest.raises(exceptions.ResourceLocked):
         sr.acquire_resource(account, resource_name_1, user_1)
-    account, message_5 = sr.acquire_resource(account, resource_name_1, user_1, override=True)
+    message_5 = sr.acquire_resource(account, resource_name_1, user_1, override=True)
     assert f"The resource was acquired by overriding the previous lock held by {user_2}." in message_5
 
 
@@ -88,14 +89,16 @@ def test_release_locked_resource():
     user_2 = get_uuid()
     account = sa.create_account(account_id)
 
-    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1)
+    sr.acquire_resource(account, resource_name_1, user_1)
     assert account.resources[resource_name_1] != {}
 
     with pytest.raises(exceptions.ResourceLocked) as ex:
         sr.release_resource(account, resource_name_1, user_2)
     assert ex.value.message.startswith("You cannot release a lock held by another user. ")
 
-    account = sr.release_resource(account, resource_name_1, user_1)
+    message_2 = sr.release_resource(account, resource_name_1, user_1)
+    assert message_2 == f"The resource {resource_name_1} has been released."
+    account = sa.get_account(account_id)
     assert account.resources[resource_name_1] == {}
 
 
@@ -106,10 +109,12 @@ def test_release_unlocked_resource():
     user_2 = get_uuid()
     account = sa.create_account(account_id)
 
-    account, message_1 = sr.acquire_resource(account, resource_name_1, user_1, duration=-100)
+    sr.acquire_resource(account, resource_name_1, user_1, duration=-100)
     assert account.resources[resource_name_1] != {}
 
-    account = sr.release_resource(account, resource_name_1, user_2)
+    message_2 = sr.release_resource(account, resource_name_1, user_2)
+    assert message_2 == f"The resource {resource_name_1} has been released."
+    account = sa.get_account(account_id)
     assert account.resources[resource_name_1] == {}
 
 
@@ -133,20 +138,15 @@ def test_list_resources():
     sr.create_resource(account, resource_name_1)
 
     list_of_resources = sr.list_resources(account)
-    assert list_of_resources == f"The following resource has been registered: {resource_name_1}."
+    assert list_of_resources == f"{resource_name_1}."
 
     sr.acquire_resource(account, resource_name_2, user_1)
     list_of_resources = sr.list_resources(account)
-    assert (
-        list_of_resources == f"The following resources have been registered: {resource_name_1} and {resource_name_2}."
-    )
+    assert list_of_resources == f"{resource_name_1} and {resource_name_2}."
 
     sr.acquire_resource(account, resource_name_3, user_1)
     list_of_resources = sr.list_resources(account)
-    assert (
-        list_of_resources
-        == f"The following resources have been registered: {resource_name_1}, {resource_name_2} and {resource_name_3}."
-    )
+    assert list_of_resources == f"{resource_name_1}, {resource_name_2} and {resource_name_3}."
 
 
 def test_delete_resource():
@@ -155,13 +155,14 @@ def test_delete_resource():
     resource_name_2 = get_uuid()
     user_1 = get_uuid()
     account = sa.create_account(account_id)
-    account = sr.create_resource(account, resource_name_1)
-    account = sr.create_resource(account, resource_name_2)
+    sr.create_resource(account, resource_name_1)
+    sr.create_resource(account, resource_name_2)
 
     assert resource_name_1 in account.resources
     assert resource_name_2 in account.resources
 
-    account = sr.delete_resource(account, resource_name_1, user_1)
+    message_1 = sr.delete_resource(account, resource_name_1, user_1)
+    assert message_1 == f"Resource {resource_name_1} has been deleted."
 
     assert resource_name_1 not in account.resources
     assert resource_name_2 in account.resources
