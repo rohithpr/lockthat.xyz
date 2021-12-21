@@ -1,0 +1,12 @@
+{
+  "name": "takethat-api",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless": "^2.69.1",
+    "serverless-domain-manager": "^5.2.0",
+    "serverless-python-requirements": "^5.2.2",
+    "serverless-wsgi": "^3.0.0"
+  }
+}
