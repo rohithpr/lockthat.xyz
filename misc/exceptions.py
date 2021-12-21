@@ -37,3 +37,8 @@ class ResourceLocked(HoldException):
 class SlackTokenMismatch(HoldException):
     def __init__(self, token):
         super().__init__(f"Received incorrect {token=}")
+
+
+class InvalidCommand(HoldException):
+    def __init__(self, message):
+        super().__init__(message)
