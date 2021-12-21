@@ -6,6 +6,13 @@ from service import account_service
 from .utils import get_uuid
 
 
+def test_get_account():
+    test_account = get_uuid()
+    created_account = account_service.create_account(test_account)
+    account = models.Account.get(test_account)
+    assert created_account.uid == account.uid
+
+
 def test_create_account():
     test_account = get_uuid()
     with pytest.raises(Account.DoesNotExist):
