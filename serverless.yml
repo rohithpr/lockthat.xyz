@@ -1,0 +1,72 @@
+org: praroh2
+app: lockthat-backend
+service: lockthat-api
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: prod
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+
+  environment:
+    # Generic
+    HOLD_STAGE: "prod"
+    HOLD_SENTRY_DSN: ${env:HOLD_SENTRY_DSN}
+    HOLD_SLACK_VERIFICATION_TOKEN: ${env:HOLD_SLACK_VERIFICATION_TOKEN}
+    HOLD_SLACK_SIGNING_SECRET: ${env:HOLD_SLACK_SIGNING_SECRET}
+    LOCKTHAT_DOMAIN: "https://app.lockthat.xyz"
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            # TODO: Grant granular access to required actions
+            - "dynamodb:*"
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/lockthat-prod-accounts
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: lockthat-prod-accounts
+        AttributeDefinitions:
+          - AttributeName: uid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uid
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: 'ANY /{proxy+}'
+
+custom:
+  wsgi:
+    app: app.app
+    pythonBin: python3 # Some systems with Python3 may require this
+    packRequirements: false
+  pythonRequirements:
+    dockerizePip: non-linux
+  customDomain:
+    domainName: api.lockthat.xyz
+    stage: prod
+    basePath: api
+    certificateName: '*.lockthat.xyz'
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    apiType: rest
+    autoDomain: false
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-domain-manager
