@@ -1,6 +1,13 @@
 from misc import exceptions
 
-from .resource_service import acquire_resource, create_resource, delete_resource, list_resources, release_resource
+from .resource_service import (
+    acquire_resource,
+    create_resource,
+    delete_resource,
+    help_,
+    list_resources,
+    release_resource,
+)
 
 TARGETS = {
     "create": create_resource,
@@ -9,6 +16,7 @@ TARGETS = {
     "release": release_resource,
     "list": list_resources,
     "delete": delete_resource,
+    "help": help_,
 }
 
 
@@ -25,7 +33,7 @@ def parse_command(text):  # noqa: C901
         raise exceptions.InvalidCommand(fully_invalid_command_message)
 
     command = words[0]
-    if command in {"list"}:
+    if command in {"list", "help"}:
         return TARGETS[command], args
 
     elif command in {"create", "release", "delete", "lock", "unlock"}:

@@ -89,6 +89,22 @@ def list_resources(account, **_):
     return f"{formatted}."
 
 
+def help_(**_):
+    help_text = (
+        "Hello! You can use the following commands with the `lockthat` app:\n"
+        "- `/lockthat help`: Display this help text.\n"
+        "- `/lockthat create my-resource`: Register a new resource called `my-resource` with the lockthat app.\n"
+        "- `/lockthat list`: List all resources.\n"
+        "- `/lockthat lock my-resource`: Lock `my-resource` for 24 hours.\n"
+        "- `/lockthat lock my-resource 12 d super secret project`: Lock `my-resource` for 12 days and mention"
+        " that you're working on a super secret project. "
+        "You can lock a resource for a specified amount time such as `30 mins`, `2 hours`, `5 weeks`, or `1 month`.\n"
+        "- `/lockthat unlock my-resource`: Unlock `my-resource` and allow others to lock it!\n"
+        "- `/lockthat delete my-resource`: Deregister `my-resource` from the lockthat app.\n"
+    )
+    return {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": help_text}}]}
+
+
 def delete_resource(account, resource_name, user):
     release_resource(account, resource_name, user)
     del account.resources[resource_name]
