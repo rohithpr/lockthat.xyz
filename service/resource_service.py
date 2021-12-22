@@ -79,7 +79,7 @@ def release_resource(account, resource_name, user):
     return f"The resource {resource_name} has been released."
 
 
-def list_resources(account):
+def list_resources(account, **_):
     resources = list(sorted(account.resources.keys()))
     if len(resources) <= 1:
         formatted = resources[0]
