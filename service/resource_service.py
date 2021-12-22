@@ -19,12 +19,19 @@ def create_resource(account, resource_name, **_):
     return f"The resource {resource_name} has been created."
 
 
-def create_resource_acquire_status_message(resource_name, user, expiry, lock_reason, overridden_from=None):
-    message = f"Resource '{resource_name}' is locked by user '{user}' till {expiry.strftime('%Y-%b-%d %I:%M %p')} UTC."
-    if lock_reason:
-        message = f"{message} Reason: {lock_reason}."
+def create_resource_acquire_status_message(resource_name, user, expiry, lock_message, overridden_from=None):
+    lock_reason = "."
+    if lock_message:
+        lock_reason = f". Reason: {lock_message.rstrip('.')}."
+
+    message = (
+        f"Resource `{resource_name}` is locked by user <@{user}> till "
+        f"`<!date^{expiry.strftime('%s')}^{{time}} {{date_short_pretty}}|"
+        f"{expiry.strftime('%Y-%b-%d %I:%M %p')} UTC>`"
+        f"{lock_reason}"
+    )
     if overridden_from:
-        message = f"{message} The resource was acquired by overriding the previous lock held by {overridden_from}."
+        message = f"{message} The resource was acquired by overriding the previous lock held by <@{overridden_from}>."
     return message
 
 
