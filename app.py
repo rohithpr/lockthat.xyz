@@ -28,8 +28,8 @@ def slack():
         return "Slack request token could not be verified. Please try again later."
 
     account = account_service.get_or_create_account(account_id)
-    target_method, kwargs = command_service.parse_command(text)
     try:
+        target_method, kwargs = command_service.parse_command(text)
         return target_method(account=account, user=user, **kwargs)
     except exceptions.HoldException as e:
         return e.message
