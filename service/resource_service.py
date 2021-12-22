@@ -76,7 +76,7 @@ def release_resource(account, resource_name, user):
 
     account.resources[resource_name] = {}
     account.save()
-    return f"The resource {resource_name} has been released."
+    return f"The resource `{resource_name}` has been released."
 
 
 def list_resources(account, **_):
@@ -109,4 +109,4 @@ def delete_resource(account, resource_name, user):
     release_resource(account, resource_name, user)
     del account.resources[resource_name]
     account.save()
-    return f"Resource {resource_name} has been deleted."
+    return f"The resource `{resource_name}` has been deleted."
