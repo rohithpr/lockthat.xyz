@@ -47,11 +47,11 @@ def test_acquire_resource():
     # Acquire a created resource
     message_1 = sr.acquire_resource(account, resource_name_1, user_1)
     # TODO: use freeze time fixture instead of checking for startswith
-    assert message_1.startswith(f"Resource '{resource_name_1}' is locked by user '{user_1}' till")
+    assert message_1.startswith(f"Resource `{resource_name_1}` is locked by user <@{user_1}> till")
 
     # Create an acquire a resource
     message_2 = sr.acquire_resource(account, resource_name_2, user_2)
-    assert message_2.startswith(f"Resource '{resource_name_2}' is locked by user '{user_2}' till")
+    assert message_2.startswith(f"Resource `{resource_name_2}` is locked by user <@{user_2}> till")
 
 
 def test_acquire_locked_resource():
@@ -79,7 +79,7 @@ def test_acquire_locked_resource():
     with pytest.raises(exceptions.ResourceLocked):
         sr.acquire_resource(account, resource_name_1, user_1)
     message_5 = sr.acquire_resource(account, resource_name_1, user_1, override=True)
-    assert f"The resource was acquired by overriding the previous lock held by {user_2}." in message_5
+    assert f"The resource was acquired by overriding the previous lock held by <@{user_2}>." in message_5
 
 
 def test_release_locked_resource():
@@ -97,7 +97,7 @@ def test_release_locked_resource():
     assert ex.value.message.startswith("You cannot release a lock held by another user. ")
 
     message_2 = sr.release_resource(account, resource_name_1, user_1)
-    assert message_2 == f"The resource {resource_name_1} has been released."
+    assert message_2 == f"The resource `{resource_name_1}` has been released."
     account = sa.get_account(account_id)
     assert account.resources[resource_name_1] == {}
 
@@ -113,7 +113,7 @@ def test_release_unlocked_resource():
     assert account.resources[resource_name_1] != {}
 
     message_2 = sr.release_resource(account, resource_name_1, user_2)
-    assert message_2 == f"The resource {resource_name_1} has been released."
+    assert message_2 == f"The resource `{resource_name_1}` has been released."
     account = sa.get_account(account_id)
     assert account.resources[resource_name_1] == {}
 
@@ -132,21 +132,18 @@ def test_list_resources():
     account_id = get_uuid()
     resource_name_1 = "ABC"
     resource_name_2 = "DEF"
-    resource_name_3 = "GHI"
     user_1 = get_uuid()
     account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
 
-    list_of_resources = sr.list_resources(account)
-    assert list_of_resources == f"{resource_name_1}."
+    response = sr.list_resources(account)
+    list_of_resources = response["blocks"][0]["text"]["text"]
+    assert f"{resource_name_1}" in list_of_resources
 
     sr.acquire_resource(account, resource_name_2, user_1)
-    list_of_resources = sr.list_resources(account)
-    assert list_of_resources == f"{resource_name_1} and {resource_name_2}."
-
-    sr.acquire_resource(account, resource_name_3, user_1)
-    list_of_resources = sr.list_resources(account)
-    assert list_of_resources == f"{resource_name_1}, {resource_name_2} and {resource_name_3}."
+    response = sr.list_resources(account)
+    list_of_resources = response["blocks"][0]["text"]["text"]
+    assert f"{resource_name_1}" in list_of_resources and f"{resource_name_2}" in list_of_resources
 
 
 def test_delete_resource():
@@ -162,7 +159,7 @@ def test_delete_resource():
     assert resource_name_2 in account.resources
 
     message_1 = sr.delete_resource(account, resource_name_1, user_1)
-    assert message_1 == f"Resource {resource_name_1} has been deleted."
+    assert message_1 == f"The resource `{resource_name_1}` has been deleted."
 
     assert resource_name_1 not in account.resources
     assert resource_name_2 in account.resources
