@@ -96,11 +96,15 @@ def list_resources(account, **_):
         resource_locked = resource.get("locked", False)
         expiry = datetime.fromisoformat(resource.get("expiry", str(datetime.utcnow())))
         if resource_locked and expiry > datetime.utcnow():
+            lock_reason = ""
+            if resource["message"]:
+                lock_reason = f". Reason: {resource['message'].rstrip('.')}."
             resource_lock_info = (
                 ": Locked till "
                 f"`<!date^{expiry.strftime('%s')}^{{time}} {{date_short_pretty}}|"
                 f"{expiry.strftime('%Y-%b-%d %I:%M %p')} UTC>`"
                 f" by <@{resource['user']}>"
+                f"{lock_reason}"
             )
 
         resource_line = f"- `{resource_name}`{resource_lock_info}\n"
