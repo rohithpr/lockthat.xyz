@@ -33,7 +33,8 @@ def slack():
         return target_method(account=account, user=user, **kwargs)
     except exceptions.HoldException as e:
         return e.message
-    except Exception:
+    except Exception as e:
+        exceptions.report_exception(e)
         return "An unknown error occurred. Please try again later or contact us at letsfinditio@gmail.com."
 
 
