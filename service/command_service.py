@@ -39,6 +39,10 @@ def parse_command(text):  # noqa: C901
     if command in {"lock"}:
         words = words[2:]
         if words:
+            if words[-1] == "override":
+                args["override"] = True
+                words = words[:-1]
+        if words:
             if words[0].isdigit():
                 duration = int(words[0])
             if words[1:]:

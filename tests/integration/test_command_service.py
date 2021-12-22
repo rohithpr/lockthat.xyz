@@ -43,3 +43,8 @@ def test_lock_with_duration():
 def test_lock_with_message():
     method, args = sc.parse_command("lock resource-name 12 w some reason")
     assert args == {"resource_name": "resource-name", "duration": 12 * 24 * 60 * 7, "message": "some reason"}
+
+
+def test_lock_with_override():
+    method, args = sc.parse_command("lock resource-name 12 h some reason override")
+    assert args == {"resource_name": "resource-name", "duration": 12 * 60, "message": "some reason", "override": True}
