@@ -81,12 +81,32 @@ def release_resource(account, resource_name, user):
 
 def list_resources(account, **_):
     resources = list(sorted(account.resources.keys()))
-    if len(resources) <= 1:
-        formatted = resources[0]
-    else:
-        formatted = ", ".join(resources[:-1])
-        formatted = f"{formatted} and {resources[-1]}"
-    return f"{formatted}."
+    if not resources:
+        return "No resources have been registered with the `lockthat` app. Run `/lockthat help` to get started."
+
+    message = (
+        f"The following {'resources have' if len(resources) > 1 else 'resource has'}"
+        "been registered with the `lockthat` app:\n"
+    )
+    for resource_name in resources:
+        resource = account.resources[resource_name]
+
+        resource_lock_info = ""
+
+        resource_locked = resource.get("locked", False)
+        expiry = datetime.fromisoformat(resource.get("expiry", str(datetime.utcnow())))
+        if resource_locked and expiry > datetime.utcnow():
+            resource_lock_info = (
+                ": Locked till "
+                f"`<!date^{expiry.strftime('%s')}^{{time}} {{date_short_pretty}}|"
+                f"{expiry.strftime('%Y-%b-%d %I:%M %p')} UTC>`"
+                f" by <@{resource['user']}>"
+            )
+
+        resource_line = f"- `{resource_name}`{resource_lock_info}\n"
+        message += resource_line
+
+    return {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": message}}]}
 
 
 def help_(**_):
