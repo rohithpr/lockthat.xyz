@@ -15,7 +15,7 @@ sentry_sdk.init(
 app = Flask(__name__)
 
 
-@app.route("/api/slack", methods=["GET", "POST"])
+@app.route("/api/slack", methods=["POST"])
 def slack():
     form_data = request.form
     token = form_data.get("token")
