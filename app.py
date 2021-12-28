@@ -21,13 +21,14 @@ def slack():
     token = form_data.get("token")
     text = form_data.get("text")
     account_id = form_data.get("team_id")
+    account_domain = form_data.get("team_domain")
     user = form_data.get("user_id")
 
     if token != constants.SLACK_VERIFICATION_TOKEN:
         exceptions.capture_exception(exceptions.SlackTokenMismatch(token))
         return "Slack request token could not be verified. Please try again later."
 
-    account = account_service.get_or_create_account(account_id)
+    account = account_service.get_or_create_account(account_id, account_domain)
     try:
         target_method, kwargs = command_service.parse_command(text)
         return target_method(account=account, user=user, **kwargs)
