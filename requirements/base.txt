@@ -6,5 +6,6 @@ Flask-Login==0.5.0
 # Specify older version of Werkzeug and Flask to overcome lambda issues.
 Flask<2.0.0  # noqa
 pynamodb==5.0.3
+requests==2.26.0
 sentry-sdk[flask]==1.3.1
 Werkzeug==1.0.1  # noqa
