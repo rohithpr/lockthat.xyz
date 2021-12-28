@@ -16,6 +16,7 @@ class Account(Model):
     uid = UnicodeAttribute(hash_key=True)
     resources = JSONAttribute(default=dict)
     account_domain = UnicodeAttribute(default="")
+    access_token = UnicodeAttribute(default="")
     plan = UnicodeAttribute(default=HOBBY_TIER)
 
 
