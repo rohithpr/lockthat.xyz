@@ -23,8 +23,7 @@ TARGETS = {
 # TODO: Refactor
 def parse_command(text):  # noqa: C901
     fully_invalid_command_message = (
-        "Please enter a valid command such as: `list`, `create resource-name`, "
-        "`lock resource-name`, `unlock resource-name`, `delete resource-name`"
+        "Sorry, I couldn't understand that. " "Please run `/lockthat help` to get a list of commands that I understand."
     )
     args = {}
 
