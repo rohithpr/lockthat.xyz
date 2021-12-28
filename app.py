@@ -39,6 +39,11 @@ def slack():
         return "An unknown error occurred. Please try again later or contact us at letsfinditio@gmail.com."
 
 
+@app.route("/api/slack/redirect", methods=["GET", "POST"])
+def slack_redirect():
+    return account_service.handle_oauth(request)
+
+
 @app.route("/api")
 def hello():
     return "Hello!"
