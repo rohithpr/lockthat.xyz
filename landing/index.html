@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="LockThat - Resource Usage Manager for Slack.">
+    <style type="text/css">
+      body {
+        margin:40px auto;
+        max-width:650px;
+        line-height:1.6;
+        font-size:18px;
+        color:#444;
+        padding:0 10px
+      }
+      h1, h2, h3 {
+        line-height:1.2;
+        text-align: center;
+      }
+      kbd {
+        white-space: nowrap;
+        background-color: #FFA601;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LockThat</h1>
+    <h2>Resource Usage Manager for Slack</h2>
+    <h2>
+      <!-- Add to Slack button -->
+      <a href="https://slack.com/oauth/v2/authorize?client_id=2582407776291.2867435583444&scope=commands,chat:write&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+    </h2>
+    <p>
+      Use LockThat to keep track of your team's shared resources and who is using them. No more pesky messages like "Is anyone using the test site?", just run <kbd>/lockthat lock test-site</kbd> and you'll either get to use the test site or you'll get to know who is using it. Run <kbd>/lockthat help</kbd> to learn more about the app.
+    </p>
+    <p>
+      Note: LockThat does not prevent multiple people from using the same resource. It works on an honor system!
+    </p>
+    <h2>Example Commands</h2>
+    <ul>
+      <li><kbd>/lockthat help</kbd>: Display help text with information about all the commands you can use with LockThat.</li>
+      <li><kbd>/lockthat create test-site</kbd>: Register a new resource called <kbd>test-site</kbd>.</li>
+      <li><kbd>/lockthat lock test-site</kbd>: Lock <kbd>test-site</kbd> for your use for 24 hours.</li>
+      <li><kbd>/lockthat lock test-site 12 d super secret project</kbd>: Lock <kbd>test-site</kbd> for 12 days, along with a message about why you're using it. You can also lock a resource for other specific periods of time. Eg: 30 days, 2 hours, 5 weeks, or 1 month.</li>
+      <li><kbd>/lockthat unlock test-site</kbd>: Unlock <kbd>test-site</kbd> and make it available for others to use.</li>
+      <li><kbd>/lockthat delete test-site</kbd>: Deregister <kbd>test-site</kbd> from the LockThat app.</li>
+      <li><kbd>/lockthat list</kbd>: Get a list of all the resources registered with LockThat.</li>
+    </ul>
+  </body>
+</html>
