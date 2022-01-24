@@ -16,7 +16,7 @@ def create_resource(account, resource_name, **_):
 
     account.resources[resource_name] = {}
     account.save()
-    return f"The resource {resource_name} has been created."
+    return f"The resource `{resource_name}` has been created."
 
 
 def create_resource_acquire_status_message(resource_name, user, expiry, lock_message, overridden_from=None):
