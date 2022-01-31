@@ -13,7 +13,7 @@ def test_create_resource():
     account = sa.create_account(account_id)
     sr.create_resource(account, resource_name_1)
     message = sr.create_resource(account, resource_name_2)
-    assert message == f"The resource {resource_name_2} has been created."
+    assert message == f"The resource `{resource_name_2}` has been created."
     assert account.resources == {resource_name_1: {}, resource_name_2: {}}
 
 
