@@ -12,13 +12,13 @@ Note: LockThat does not prevent multiple people from using the same resource. It
 
 ### Example Slack Commands
 
-`/lockthat help`: Display help text with information about all the commands you can use with LockThat.
-`/lockthat create test-site`: Register a new resource called `test-site`.
-`/lockthat lock test-site`: Lock `test-site` for your use for 24 hours.
-`/lockthat lock test-site 12 d super secret project`: Lock `test-site` for 12 days, along with a message about why you're using it. You can also lock a resource for other specific periods of time. Eg: 30 days, 2 hours, 5 weeks, or 1 month.
-`/lockthat unlock test-site`: Unlock `test-site` and make it available for others to use.
-`/lockthat delete test-site`: Deregister `test-site` from the LockThat app.
-`/lockthat list`: Get a list of all the resources registered with LockThat.
+- `/lockthat help`: Display help text with information about all the commands you can use with LockThat.
+- `/lockthat create test-site`: Register a new resource called `test-site`.
+- `/lockthat lock test-site`: Lock `test-site` for your use for 24 hours.
+- `/lockthat lock test-site 12 d super secret project`: Lock `test-site` for 12 days, along with a message about why you're using it. You can also lock a resource for other specific periods of time. Eg: 30 days, 2 hours, 5 weeks, or 1 month.
+- `/lockthat unlock test-site`: Unlock `test-site` and make it available for others to use.
+- `/lockthat delete test-site`: Deregister `test-site` from the LockThat app.
+- `/lockthat list`: Get a list of all the resources registered with LockThat.
 
 ### Run the project locally
 
